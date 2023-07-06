@@ -1,0 +1,36 @@
+import { Book, CreateBook } from "../protocols/book";
+import { CreateReview } from "../protocols/review";
+
+import prisma from "../database";
+
+export async function getBooks() {
+  const result = prisma.books.findMany();
+  return result;
+}
+
+export async function getBook(id: number) {
+  const result = prisma.books.findFirst({
+    where: {
+      id,
+    },
+  });
+  return result;
+}
+
+export async function createBook(book: CreateBook) {
+  const result = prisma.books.create({
+    data: book,
+  });
+
+  return result;
+}
+
+export async function reviewBook(bookReview: CreateReview) {
+  const { bookId: id, ...bookInfo } = bookReview;
+  const result = prisma.books.update({
+    data: { ...bookInfo, read: true },
+    where: { id },
+  });
+
+  return result;
+}
